@@ -1,0 +1,11 @@
+Third-party code bundled with this SDK.
+
+src/vendor/monocypher.c, monocypher.h
+src/vendor/monocypher-ed25519.c, monocypher-ed25519.h
+
+    Monocypher 4.0.3, dual-licensed CC0-1.0 or BSD-2-Clause.
+    Full text: src/vendor/MONOCYPHER-LICENCE.md
+
+Both are required. Monocypher's default EdDSA is BLAKE2b-based and would reject
+every signature the RudeAuth server produces; monocypher-ed25519 supplies the
+SHA-512 variant the protocol actually uses.

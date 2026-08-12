@@ -186,4 +186,4 @@ build/live_test.exe https://api.rudeauth.com <app_id> <public_key> <licence_key>
 
 ## Licence
 
-MIT — see [LICENSE](LICENSE). Vendored code in `src/vendor/` carries its own.
+MIT — see [LICENSE](LICENSE). Bundled third-party code is listed in [NOTICE](NOTICE).
