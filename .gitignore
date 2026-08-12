@@ -1,0 +1,19 @@
+# Build output.
+build/
+build-*/
+*.o
+*.a
+*.exe
+*.obj
+*.lib
+*.pdb
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# Your own configuration. rudeauth.ini holds a licence key, which is a real
+# credential — a licence key is what a customer pays for. The template that
+# ships with the example is rudeauth.example.ini and stays tracked.
+rudeauth.ini
