@@ -12,6 +12,18 @@ licence check.
 
 ---
 
+## Set it up with AI
+
+Paste this into Claude Code, Cursor, or any LLM.
+
+```
+Add RudeAuth licensing to my C++ app.
+Read https://docs.rudeauth.com/llms.txt for how RudeAuth works, and follow this
+SDK's AGENTS.md rules: no bool is_licensed(), embed the public key, verify before
+trust, no offline cache, and gate real logic into a server-delivered payload.
+My app id is <APP_ID> and my public key is <PUBLIC_KEY>.
+```
+
 ## Quickstart
 
 Five steps from nothing to a working licence check.
