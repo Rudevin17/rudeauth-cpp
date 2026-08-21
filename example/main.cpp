@@ -6,79 +6,38 @@
 #include <rudeauth/rudeauth.hpp>
 
 #include <cstdio>
-#include <cstdlib>
-#include <fstream>
 #include <iostream>
-#include <map>
 #include <string>
 
-namespace {
-
-// ---------------------------------------------------------------------------
-// Config file, FOR THIS EXAMPLE ONLY.
+// The two values your application ships with. Replace these.
 //
-// Reading the app ID and public key from a file makes the example runnable
-// without editing and rebuilding, which is what you want while evaluating.
+// Both are safe to embed: the public key verifies responses and cannot forge
+// one, and the application ID identifies rather than authorises. Embedding is
+// not a precaution about secrecy. It is what puts the trust anchor out of
+// reach of whoever is trying to bypass you.
 //
-// It is the wrong thing to do in a real client, and not for style reasons.
-// The public key is what proves a response came from your server. Put it in a
-// file and anyone can replace it with their own, point the base URL at a
-// server they control, and your client will happily verify their forged
-// replies. The whole signature check becomes theatre.
-//
-// In production: compile both values in. Neither is secret, and both must be
-// beyond the reach of whoever is trying to bypass you.
-// ---------------------------------------------------------------------------
-
-std::map<std::string, std::string> load_config(const char* path) {
-    std::map<std::string, std::string> cfg;
-    std::ifstream in(path);
-    if (!in) return cfg;
-
-    std::string line;
-    while (std::getline(in, line)) {
-        // Strip a trailing CR so a file saved on Windows parses on both.
-        if (!line.empty() && line.back() == '\r') line.pop_back();
-        if (line.empty() || line[0] == '#') continue;
-
-        const auto eq = line.find('=');
-        if (eq == std::string::npos) continue;
-
-        auto trim = [](std::string s) {
-            const auto b = s.find_first_not_of(" \t");
-            if (b == std::string::npos) return std::string{};
-            const auto e = s.find_last_not_of(" \t");
-            return s.substr(b, e - b + 1);
-        };
-        cfg[trim(line.substr(0, eq))] = trim(line.substr(eq + 1));
-    }
-    return cfg;
-}
-
-// Environment wins over the file, so a one-off run needs no edit at all.
-std::string setting(const std::map<std::string, std::string>& cfg,
-                    const char* key, const char* fallback) {
-    if (const char* env = std::getenv(key); env && *env) return env;
-    if (const auto it = cfg.find(key); it != cfg.end() && !it->second.empty()) return it->second;
-    return fallback;
-}
-
-} // namespace
+// Do not move these into a config file or an environment variable, however
+// convenient that looks. The public key is what proves a response came from
+// your server. Read it at runtime and anyone can swap it for their own, point
+// the base URL at a server they run, and your client will happily verify their
+// forged replies. The whole signature check becomes theatre.
+constexpr const char* APP_ID     = "REPLACE_WITH_YOUR_APP_ID";
+constexpr const char* PUBLIC_KEY = "REPLACE_WITH_YOUR_PUBLIC_KEY";
+constexpr const char* BASE_URL   = "http://127.0.0.1:8099";
 
 int main() {
-    const auto cfg = load_config("rudeauth.ini");
+    const std::string app_id     = APP_ID;
+    const std::string public_key = PUBLIC_KEY;
+    const std::string base_url   = BASE_URL;
 
-    const std::string app_id     = setting(cfg, "RUDEAUTH_APP_ID", "");
-    const std::string public_key = setting(cfg, "RUDEAUTH_PUBLIC_KEY", "");
-    const std::string base_url   = setting(cfg, "RUDEAUTH_BASE_URL", "http://127.0.0.1:8099");
-
-    if (app_id.empty() || public_key.empty()) {
+    if (app_id == APP_ID || public_key == PUBLIC_KEY) {
         std::printf(
             "No application configured.\n\n"
-            "  1. Copy rudeauth.example.ini to rudeauth.ini\n"
-            "  2. Paste the Application ID and signing public key from the dashboard\n"
-            "     (Applications -> Application credentials)\n\n"
-            "Or set RUDEAUTH_APP_ID and RUDEAUTH_PUBLIC_KEY in the environment.\n");
+            "  Edit APP_ID and PUBLIC_KEY at the top of main.cpp, then rebuild.\n"
+            "  Both come from the dashboard: Applications -> Application credentials.\n\n"
+            "  You are already compiling this, so there is nothing to save by\n"
+            "  reading them from a file, and a public key read at runtime is one\n"
+            "  an attacker can swap for their own.\n");
         return 1;
     }
 
